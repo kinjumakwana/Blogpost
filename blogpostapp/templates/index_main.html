@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+    body {
+        font-family: "Roboto", sans-serif;
+        font-size: 18px;
+        background-color: #fdfdfd;
+    }
+
+    .head_text {
+        color: white;
+    }
+
+    .card {
+        box-shadow: 0 16px 48px #E3E7EB;
+    }
+</style>
+
+<header class="masthead">
+    <div class="overlay"></div>
+    <div class="container">
+        <div class="row">
+            <div class=" col-md-8 col-md-10 mx-auto">
+                <div class="site-heading">
+                    <h3 class=" site-heading my-4 mt-3 text-white"> Welcome to my awesome Blog </h3>
+                    <p class="text-light">We Love Django As much as you do..! &nbsp
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+<div class="container">
+    <div class="row">
+        <!-- Blog Entries Column -->
+        <div class="col-md-8 mt-3 left">
+
+            <h1>Welcome to User site</h1>
+            {% if user.is_authenticated %}
+            <!-- url 'user:noti' Add User Notification -->
+         
+            <a href="{% url 'blogpostapp:viewuser' %}" class="px-2 py-4 text-gray-500
+            text-lg font-semibold"> User Info </a><br><br>
+            
+            <a href="{% url 'blogpostapp:show_post' %}" class="px-2 py-4 text-gray-500
+            text-lg font-semibold"> Show Post </a><br><br>
+            
+            <a href="{% url 'blogpostapp:logout' %}" class="px-2 py-4 text-gray-500
+                text-lg font-semibold"> Logout </a><br><br>
+            
+            {% else %}
+            <a href="{% url 'blogpostapp:login' %}" class="px-2 py-4 text-gray-500
+                text-lg font-semibold"> Login </a>/
+            <a href="{% url 'blogpostapp:SignUp' %}" class="px-2 py-4 text-gray-500
+                text-lg font-semibold"> Sign up </a>
+            {% endif %}
+    
+        </div>
+        {% block sidebar %} {% include 'sidebar.html' %} {% endblock sidebar %}
+    </div>
+</div>
+{%endblock%}

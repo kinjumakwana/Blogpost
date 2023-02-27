@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<section>
+    <div class="container">
+        <div class="box-wrapper">				
+            <div class="box box-border">
+                <div class="box-body">
+                    <h4 style="text-align: center;">Add Blog</h4>
+                        <form class="bg-white shadow-md m-10 px-8" method="POST" action="" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            {{form.as_p}}
+                            {{ form.media }}
+                            <div class="p-3">
+                                <input class="shadow apperence-none border rounded py-2 px-3 mr-10 bg-green-500" type="submit" name="Add Blog" value="Add Blog">
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock content %}

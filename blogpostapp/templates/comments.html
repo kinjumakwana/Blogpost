@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+
+<h1>comments</h1>
+{% for comment in comments %}
+
+<div class="details">
+    <h5 class="name"  style="text-transform:uppercase">{{comment.user}}</h5>
+    <div class="time">{{comment.created}}</div>
+    <div class="description">
+        <p>{{ comment.body|linebreaks }}</p>
+    </div>
+</div>
+{% endfor %}
+
+
+{% endblock content %}

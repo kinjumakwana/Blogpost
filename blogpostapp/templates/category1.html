@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+{% if category %}
+<div class="row" style="margin: 10px;">
+    <h4 style="margin-bottom: 10px;"><center> &nbsp;{{ category_name }} </center></h4>&nbsp;&nbsp;
+    {% if pages %}
+
+        {% for p in pages %}
+            <div class="col-md-3 col-sm-3 col-xs-12">
+                <div class="row">
+                    <article class="article col-md-12">
+                        <div class="inner">
+                            <figure>
+                                <a href="{% url 'blogpostapp:post' p.id %}">
+                                    <img src="{{p.blockimage.url}}" alt="SampleArticle">
+                                </a>
+                            </figure>
+                            <div class="padding">
+                                <div class="detail">
+                                    <div class="time"> {{p.created_on}}</div>
+                                    <div class="category"><a href="category.html">{{p.category}}<br><br></a></div>
+                                </div>
+                                
+                                <h2>{{p.Title}}</h2>
+                                
+                                <div class="padding">
+                                <p >{{p.Desc|safe}}</p>
+                                </div>        
+                                
+                                <div class="time">
+                                    Blog Post by: {{p.author}}
+                                </div>
+                            </div>
+                            <div class="padding">
+                                <footer>
+                                    <a href="javascript:;" class="favorite-button favbtn_{{ p.id }}" data-blogid="{{ p.id }}">
+                                        {% csrf_token %}
+                                        
+                                        {% if request.user in p.favourite.all %}
+                                            <i class="ion-android-favorite"></i>
+                                        {% else %}
+                                            <i class="ion-android-favorite-outline"></i>
+                                        {% endif %}
+                                    </a>    
+                                    <a href="{% url 'blogpostapp:post' p.id %}">
+                                        <div>Read More</div>
+                                    </a>
+                                </footer>
+                              
+                            </div>
+                        </div>
+                </article>
+            </div>       
+        </div>
+        {% endfor %}
+        </div>
+        
+        {% else %}
+        <strong>No pages currently in category.</strong>
+        {% endif %}
+        {% else %}
+        The specified category {{ category_name }} does not exist!
+        {% endif %}
+    </div>
+
+{% endblock content %}

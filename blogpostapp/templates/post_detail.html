@@ -1,0 +1,490 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<section class="single">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-2">
+            </div>	
+
+            <div class="col-md-8">
+                <ol class="breadcrumb">
+                    <li><a href="#">Home</a></li>
+                </ol>
+                
+                <article class="article main-article">
+                    <div class="col-md-11">
+                        <header>
+                            <h1>{{post.Title}}</h1>
+                            
+                            <ul class="details">
+                                <li id="blocal-time" data-time="{{post.created_on}}">
+                                    {{post.created_on}}
+                                </li>
+                                <li><a>{{post.category}}</a></li>
+                                <li>By <a href="#">{{post.author}}</a></li>
+                            </ul>
+                        </header>
+                    </div>
+                    <div class="col-md-1">
+                        <a href="javascript:;" class="favorite-button favbtn_{{ post.id }}" data-blogid="{{ post.id }}">
+                            {% csrf_token %}
+                            
+                            {% if request.user in post.favourite.all %}
+                                <i class="ion-android-favorite"></i>
+                            {% else %}
+                                <i class="ion-android-favorite-outline"></i>
+                            {% endif %}
+                        </a>  
+                    </div>
+                    <div class="main">
+                        <div class="featured">
+                            <figure>
+                                <img src="{{post.blockimage.url}}" style="margin-top: 20px;">
+                            </figure>
+                        </div>
+
+                        <p>{{post.Desc|safe}}</p>
+                    </div>
+                    <!-- <footer>
+                        <div class="col">
+                            <ul class="tags">
+                                <li><a href="#">Free Themes</a></li>
+                                <li><a href="#">Bootstrap 3</a></li>
+                                <li><a href="#">Responsive Web Design</a></li>
+                                <li><a href="#">HTML5</a></li>
+                                <li><a href="#">CSS3</a></li>
+                                <li><a href="#">Web Design</a></li>
+                            </ul>
+                        </div>
+
+                    </footer> -->
+                </article>
+                <div class="sharing">
+                    <div class="title"><i class="ion-android-share-alt"></i> Sharing is caring</div>
+                        <ul class="social">
+                            <li>
+                                <a href="#" class="facebook">
+                                    <i class="ion-social-facebook"></i> Facebook
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="twitter">
+                                    <i class="ion-social-twitter"></i> Twitter
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="googleplus">
+                                    <i class="ion-social-googleplus"></i> Google+
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="linkedin">
+                                    <i class="ion-social-linkedin"></i> Linkedin
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="skype">
+                                    <i class="ion-ios-email-outline"></i> Email
+                                </a>
+                            </li>
+                            <li class="count">
+                                20
+                                <div>Shares</div>
+                            </li>
+                        </ul>
+                </div>
+                <div class="line">
+                    <div>Author</div>
+                </div>
+                <div class="author">
+                    <figure>
+                        <img src="{{post.author.image.url}}">
+                    </figure>
+                    <div class="details">
+                        <div class="job">{{post.author.bio}}</div>
+                        <h3 class="name" style="text-transform:uppercase">{{post.author}}</h3>
+                        <p>Nulla sagittis rhoncus nisi, vel gravida ante. Nunc lobortis condimentum elit, quis porta ipsum rhoncus vitae. Curabitur magna leo, porta vel fringilla gravida, consectetur in libero. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum.</p>
+                        <ul class="social trp sm">
+                            <li>
+                                <a href="{{post.author.facebook}}" class="facebook">
+                                    <svg><rect/></svg>
+                                    <i class="ion-social-facebook"></i>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{post.author.twitter}}" class="twitter">
+                                    <svg><rect/></svg>
+                                    <i class="ion-social-twitter"></i>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{post.author.instagram}}" class="instagram">
+                                    <svg><rect/></svg>
+                                    <i class="ion-social-instagram"></i>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{post.author.linkedin}}" class="linkedin">
+                                    <svg><rect/></svg>
+                                    <i class="ion-social-linkedin"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="comments">
+                    <div class="comment-list">
+                        <div class="item">
+                            
+                            <form class="row" method="post" action="{% url 'blogpostapp:Add_comment' id=post.id %}" style="margin-left: 0.1em;">
+                                {% csrf_token %}
+                                {% load crispy_forms_tags %}
+                                    <div class="col-md-12">
+                                        <h3 class="title">Leave Your Response</h3>
+                                    </div>
+                
+                                    <div class="form-group col-md-12">
+                                        <label for="message">Response <span class="required"></span></label>
+                                        <textarea class="form-control" name="body" placeholder="Write your response ..."></textarea>
+                                    </div>
+                                    <div class="form-group col-md-12">
+                                    <input  id="submit" class="btn btn-primary" type="submit" value="Send Response">
+                                    </div>
+                                    
+                            </form>
+                
+                            <form method="post" id="check_next">
+                
+                                <input type="hidden" id="next_btn" name="next_btn">
+                                <input type="hidden" id="userId" value={{request.user.id}}>
+                                <input type="hidden" id="blogid" value={{post.id}}>
+                                <input type="hidden" id="posttime" value={{post.created_on}}>
+                
+                            </form>
+                            <div class="line thin"></div>
+                            <h2 class="title">Responses <a href="{% url 'blogpostapp:Add_comment' id=post.id %}">Comments </a></h2>
+                            <!-- Template -->
+                            <div class="comment-list">
+                                <div class="comment_d" > 
+                                    {% for comment in comments %}
+                                    <div class="item"> 
+                                        <div class="user" data-user-id="{{ comment.user.id }}>                                
+                                            <figure>
+                                                <img id="image" src="{{comment.user_picture}}">
+                                            </figure>
+                                        
+                                                <div class="details">
+                                                    <h5 class="name"  style="text-transform:uppercase">{{comment.user}}</h5>
+                                                    <div class="time">{{comment.created|date:"F j, Y, g:i A"}}</div>
+                                                    <div class="description">
+                                                        <p>{{ comment.body|linebreaks }}</p>
+                                                    </div>
+                                                </div>
+                                                
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                    
+                                        <button id="load-more" class="btn btn-outline">Load More</button>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-md-2">
+            </div>
+
+        </div>
+    </div>
+</section>
+
+
+<script>
+        // Get the UTC time from the HTML element
+            var utcTime = $('#blocal-time').data('time');
+            console.log(utcTime)
+
+            // Create a Date object with the UTC time
+            // var utcDate = new Date(utcTime);
+            // console.log(utcDate)
+
+            // // Convert the UTC time to local time
+            // var localDate = new Date(utcDate.getTime() + utcDate.getTimezoneOffset() * 60000);
+
+            // // Format the local time as a string
+            // var localTimeString = localDate.toLocaleString();
+
+            $.get('/convert-utc-to-local/', {utc_time: utcTime}, function(response) {
+                var localTime = response.local_time;
+                $("#blocal-time").text(localTime);
+                });
+
+            // Set the formatted local time back into the HTML element
+            // $('#blocal-time').text(localTimeString);
+
+
+    function convertToLocalTime(utcTime) {
+        return utcTime.toLocaleString("en-US", {month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "numeric", hour12: true});
+    }
+
+    function getTimezoneOffset() {
+        var d = new Date();
+        return d.getTimezoneOffset();
+    }
+
+    function convertUTCTimeToLocalTime1(utc_timestamp) {
+        var offset = getTimezoneOffset();
+        var local_timestamp = new Date(utc_timestamp);
+        local_timestamp.setMinutes(local_timestamp.getMinutes() + offset);
+        return local_timestamp;
+    }
+
+    function convertUTCTimeToLocalTime(time) {
+        var date = new Date(time);
+        console.log(time)
+        // offset =new Date(time).getTimezoneOffset()
+        // console.log(offset)
+
+        date.setMinutes(new Date(time).getMinutes() - new Date(time).getTimezoneOffset());
+        console.log(date)
+        return date;
+
+        }
+
+    function comment_load(next){
+        
+        // alert( "Enter into comment function!" );
+            
+            var cursor = $(this).data("cursor");
+            var blogId = $(this).data("blogid");
+            var c_user= document.getElementById("userId").value;
+            var bid= document.getElementById("blogid").value;
+            // const userid = JSON.parse(document.getElementById('userid').textContent);
+            $.ajax({
+                // url: 'blogpostapp/comments/' + post_id + '/?cursor={{ cursor }}',
+                // url:"{% url 'blogpostapp:comments' post_id=post.id %}" + '?cursor={{ cursor }}',
+                url:"{% url 'blogpostapp:comments' post_id=post.id %}",
+                data: {
+                    cursor: cursor,
+                    post_id:blogId,
+                    
+                },
+                success: function(data) {
+                    // alert('Done')
+                    // $('#comment_d').append(data);
+                    nextPage = data.next;
+                    // alert(nextPage)
+                    $('#next_btn').val(nextPage)
+
+                    $.each(data.results, function(index, comment) {
+                        
+                            $(".comment_d").append(
+                            //    comment.body 
+                                '<div class="item">'+
+                                    '<div class="user">'+
+                                        '<figure>'+
+                                            // $("#image").attr('src',comment.user_picture)+
+                                            "<img src='" + comment.user_picture + "'>"+
+                                        '</figure>'+
+                                       
+                                        '<div class="details">'+
+                                            '<h5 class="name" style="text-transform:uppercase">' + comment.user + '</h5>' +
+                                            '<div class="time">' + 
+                                                '<span id="local-time">'+ new Date(comment.created+" UTC").toLocaleString("en-US", {month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "numeric", hour12: true}) +
+                                                '</span>' +'</div>'+
+                                            '<div class="description_' + comment.c_id + '">'+
+                                                '<p>' + comment.body||linebreaks + '</p>'+
+                                            '</div>'+
+                                        '</div>' +
+                                    '</div>' + 
+                                '</div>' 
+                            
+                            
+                            );
+                            if (comment.user_id == c_user)
+                            {       
+                                    console.log(comment);
+
+                                    $(".description_"+comment.c_id ).append(                               
+                                        '<a href="javascript:;" class="dele_comm" data-cid="'+comment.c_id+'"> Delete </a>'
+                                    );
+                                    // alert(comment.c_id)
+                            
+                            }
+                            if (!nextPage) {
+                            $("#load-more").hide();
+                            }
+                        });    
+                    
+                },
+            });
+        
+    }
+    
+    // Function to remove previously loaded comments
+    function removeComments() {
+        var commentContainer = $(".comment_d");
+        commentContainer.empty();
+    }
+    function refresh()
+            {   
+                // var blog_id = $(this).data('blogid');
+                $.ajax({
+                    url:"{% url 'blogpostapp:refresh_comment' post_id=post.id %}",
+                    // url: "/blogpostapp/refresh_comment/{{ post.id }}/",
+                    // url: "{% url 'blogpostapp:update_comments' %}",
+                    dataType: 'json',
+                    // data: {'blog_id': blog_id},
+                    success: function(data){
+                    alert("refresh done")
+                    
+                    $('#comment_d').html(data);
+                    
+                    }
+                });
+            }                           
+            // $(document).ajaxSuccess(function(){
+            //     window.location.reload();
+            // });
+</script>
+
+<script>        
+$(document).ready( function() {
+    // alert( "welcome to the Blogpost !" );
+        var utcTime = $("#blocal-time").data("time");
+
+        var next=true
+        comment_load(next);
+
+        $('#load-more').click(function() {
+            var c_user= document.getElementById("userId").value;
+            var cursor = $(this).data("cursor");
+            var t = $('#next_btn').val();
+            if (t){
+                $.ajax({
+                    url:t,
+                    data: {cursor: cursor},
+                    success: function(data) {
+                        // alert('Done')
+                        $('#comment_d').append(data);
+                        nextPage = data.next;
+                        // alert(nextPage)
+                     
+                        $.each(data.results, function(index, comment) {
+                            $(".comment_d").append(
+                            //    comment.body 
+                            '<div class="item">'+
+                                '<div class="user">'+
+                                    '<figure>'+
+                                        // $("#image").attr('src',comment.user_picture)+
+                                        "<img src='" + comment.user_picture + "'>"+
+                                    '</figure>'+
+                                    '<div class="details">'+
+                                        '<h5 class="name" style="text-transform:uppercase">' + comment.user + '</h5>' +
+                                        '<div class="time">' + 
+                                                '<span id="local-time">'+ new Date(comment.created+" UTC").toLocaleString("en-US", {month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "numeric", hour12: true}) +
+                                                '</span>' +'</div>'+
+                                        '<div class="description_' + comment.c_id + '">'+ 
+                                                '<p>' + comment.body||linebreaks + '</p>'+
+                                            '</div>'+
+                                        '</div>' +
+                                    '</div>' + 
+                                '</div>' 
+                            
+                            
+                            );
+                            
+                            if (comment.user_id == c_user)
+                            {       
+                                    console.log(comment);
+
+                                    $(".description_"+comment.c_id ).append(                               
+                                        '<a href="javascript:;" class="dele_comm" data-cid="'+comment.c_id+'"> Delete </a>'
+                                    );
+                                    // alert(comment.c_id)
+                            
+                            }
+                       
+                        });
+                        if (data.next==null)
+                        {   
+                            // alert("finished")
+                            $("#load-more").hide()
+                            
+                        }
+
+                        }
+                    });
+            }
+        });
+        
+        // Add comment 
+        $('form').submit(function (event) {
+            event.preventDefault();
+            var form = $(this);
+            $.ajax({
+                type: form.attr('method'),
+                url: form.attr('action'),
+                data: form.serialize(),
+                success: function (data) 
+                {
+                    $('.form-control').val("");
+                    alert("done")
+                    // refresh()
+                    if ($.isFunction(comment_load)) 
+                        {
+                        console.log("myFunction is loaded");
+                        removeComments();
+                        var next=true;
+                        comment_load(next)
+                        
+                        } 
+                        else 
+                        {
+                        console.log("myFunction is not loaded");
+                        }
+                        
+                },
+                    
+            });
+            
+        });
+        
+        //delete comment  
+        $(document).on('click', '.dele_comm', function(){
+                // alert('delete call')
+                // var blog_id= document.getElementById("blogid").value;
+                var comment_id  = $(this).data('cid');
+                var csrftoken = $("[name=csrfmiddlewaretoken]").val();
+                console.log("comment_id:", comment_id);
+                $.ajax({
+                        url: "/delete/" + comment_id ,
+                        data: {'pk': comment_id},
+                        headers:{
+                        "X-CSRFToken": csrftoken},
+                        method:"POST",
+                        success: function (response) {
+                            // alert("done")
+                            if (response.success) {
+                                removeComments();
+                                var next=true;
+                                comment_load(next)
+                            }
+
+                        }
+                    });
+            });
+            // $(document).ajaxSuccess(function(){
+            //         window.location.reload();
+            //     });
+    });
+</script>
+
+{% endblock content %}

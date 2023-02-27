@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+{% if category %}
+    <h1>{{ category.Title }}</h1>
+    
+        <div class="row" style="margin: 10px;">
+			{% for cat in category %}
+            <div class="col-md-3 col-sm-3 col-xs-12">
+                <div class="row">
+                    <article class="article col-md-12">
+                        <div class="inner">
+                            <figure>
+                                <a href="{% url 'blogpostapp:cat_page' id=cat.id %}">
+                                    <img src="{{cat.thumbnail.url}}" width="352" height="235" alt="Category Image">
+                                </a>
+                            </figure>
+                            <div class="padding">
+                                
+                               <h6><center>{{cat.Title}}</center></h6>
+                            </div>
+                        </div>
+                    </article>
+            </div>       
+            </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+{% endblock content %}

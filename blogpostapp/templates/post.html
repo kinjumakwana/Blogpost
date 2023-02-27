@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="row" style="margin: 10px;">
+{% for p in post %}
+    <div class="col-md-3 col-sm-3 col-xs-12">
+        <div class="row">
+            <article class="article col-md-12">
+                <div class="inner">
+                    <figure>
+                        <a href="{% url 'blogpostapp:post' p.id %}">
+                            <img src="{{p.blockimage.url}}" alt="SampleArticle">
+                        </a>
+                    </figure>
+                    <div class="padding">
+                        <div class="detail">
+                            <div class="time"> {{p.created_on}}</div>
+                            <div class="category"><a href="category.html">{{p.category}}<br><br></a></div>
+                        </div>
+                        
+                        <h2><a href="single.html">{{p.Title}}</a></h2>
+                        
+                        <div class="padding">
+                        <p >{{p.Desc|safe}}</p>
+                        </div>        
+                        
+                        <div class="time">
+                            Blog Post by: {{p.author}}
+                        </div>
+                        <a href="{% url 'blogpostapp:post' p.id %}">
+                            <div>Read More</div>
+                        </a>
+                    </div>                    
+
+                    <div class="padding">
+                        
+    
+                        {% if perms.blogpostapp.change_blog %}
+                        
+                            {% for group_for in request.user.groups.all %}
+                                {% if group_for.name == 'Author' %}
+                                <a href="{% url 'blogpostapp:authorchange_blog' id=p.id %}" class="px-2 py-4 text-gray-500
+                                text-lg font-semibold" > Change Blog </a><br><br>
+                                <!-- <input type="button" value="Change post"><br><br> -->
+                                {% elif group_for.name == 'Editor' %}
+                                <a href="{% url 'blogpostapp:editorchange_blog' id=p.id %}" class="px-2 py-4 text-gray-500
+                                text-lg font-semibold" > Change Blog</a><br><br>
+                                <!-- <input type="button" value="Change post"><br><br> -->
+                                {% elif group_for.name == 'Publisher' %}
+                                <a href="{% url 'blogpostapp:publisherchange_blog' id=p.id %}" class="px-2 py-4 text-gray-500
+                                text-lg font-semibold" > Change Blog</a><br><br>
+                                <!-- <input type="button" value="Change post"><br><br> -->
+                                {% else %}
+                                <input type="button" value="Change post"><br><br>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                        
+                        {% if p.is_approved %}
+                            <input type="checkbox" name="is_approved" {% if p.is_approved %} checked {% endif %}>
+                            <label> Approved blog</label><br>
+                        {% endif %}
+                        
+                        {% if p.is_published %}
+                            <input type="checkbox" name="is_published" {% if p.is_published %} checked {% endif %} value="Published blog">
+                            <label> Published blog</label><br>
+                        {% endif %}
+
+                        {% if perms.blogpostapp.delete_blog or user.is_staff %}
+                            <a href="{% url 'blogpostapp:delete_blog' blog_id=p.id %}" class="btn btn-danger">Delete</a><br>
+                        {% endif %}
+                    </div>
+                </div>
+        </article>
+    </div>       
+</div>
+  {% endfor %}
+  </div>
+  {% endblock content %}

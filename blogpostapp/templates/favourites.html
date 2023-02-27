@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<h2> User Bookmark / Favourites List </h2>
+
+<div class="row" style="margin: 10px;">
+{% for p in new %}
+    <div class="col-md-3 col-sm-3 col-xs-12">
+        <div class="row">
+            <article class="article col-md-12">
+                <div class="inner">
+                    <figure>
+                        <a href="{% url 'blogpostapp:post' p.id %}">
+                            <img src="{{p.blockimage.url}}" alt="SampleArticle">
+                        </a>
+                    </figure>
+                    <div class="padding">
+                        <div class="detail">
+                            <div class="time"> {{p.created_on}}</div>
+                            <div class="category"><a href="category.html">{{p.category}}<br><br></a></div>
+                        </div>
+                        
+                        <h2>{{p.Title}}</h2>
+                        <p>{{p.Desc|safe}}</p>
+
+                        <div class="time">
+                            Blog Post by: {{p.author}}
+                        </div>
+                        <div class="padding">
+                            <footer>
+                                <a href="javascript:;" class="favorite-button favbtn_{{ p.id }}" data-blogid="{{ p.id }}">
+                                    {% csrf_token %}
+                                    
+                                    {% if request.user in p.favourite.all %}
+                                        <i class="ion-android-favorite"></i>
+                                    {% else %}
+                                        <i class="ion-android-favorite-outline"></i>
+                                    {% endif %}
+                                </a>    
+                                <a href="{% url 'blogpostapp:post' p.id %}">
+                                    <div>Read More</div>
+                                </a>
+                            </footer>
+                          
+                        </div>
+                    </div>
+                </div>
+            </article>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+
+{% endblock content %}

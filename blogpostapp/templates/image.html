@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="container">
+    <div class="box-wrapper">				
+        <div class="box box-border">
+            <div class="box-body">
+                <h4>Image Update</h4>
+                <form method='POST' enctype="multipart/form-data">
+                    {%csrf_token%}
+                    {{i_form.as_p}}
+                    <!-- {{i_form.as_p}} -->
+                    <button type='submit'>Update</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

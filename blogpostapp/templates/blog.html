@@ -1,0 +1,247 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<section class="home">
+    <div class="container">
+        
+        <div class="row" style="margin: 10px;">
+            <div class="blog_d infinite-container">
+                {% comment %} 
+                <div class="col-md-3 col-sm-3 col-xs-12">
+                    <div class="row">
+                        <article class="article col-md-12">
+                            <div class="inner">
+                                <figure>
+                                        <img src="{{p.blockimage.url}}" alt="SampleArticle">
+                                </figure>
+                                <div class="padding">
+                                    <div class="detail">
+                                        <div class="time" id="blocal-time" data-time="{{p.created_on}}"> {{p.created_on}}</div>
+                                        <div class="category"><a href="category.html">{{p.category}}</a></div>
+                                    </div>
+                                    <h2>{{p.Title}}</h2>
+                                    <p class="blog-post">Blog Post by: {{p.author}}</p>
+                                    <p>{{p.preview|safe}}</p>
+                                    <footer>
+                                        <a href="javascript:;" class="favorite-button favbtn_{{ p.id }}" data-blogid="{{ p.id }}">
+                                            {% csrf_token %}
+                                            
+                                            {% if request.user in p.favourite.all %}
+                                                <i class="ion-android-favorite"></i>
+                                            {% else %}
+                                                <i class="ion-android-favorite-outline"></i>
+                                            {% endif %}
+                                        </a>
+
+                                        <a class="btn btn-primary more" href="{% url 'blogpostapp:post' p.id %}">
+                                            <div class="btn-text">Read More</div>
+                                            <div><i class="ion-ios-arrow-thin-right"></i></div>
+                                        </a>
+                                    </footer>
+                                </div>
+                            </div>
+                        </article>
+                    </div>
+                </div> {% endcomment %}
+            
+            </div>
+            <!-- <div> <button id="load-more" class="btn btn-outline">Load More</button></div> -->
+    </div>
+</section>
+<form>
+    {% csrf_token %}
+</form>
+<form method="post" id="check_next">
+                
+    <input type="hidden" id="next_btn" name="next_btn">
+    <input type="hidden" id="userId" value={{request.user.id}}>
+    <input type="hidden" id="blogid" value={{p.id}}>
+    <input type="hidden" id="posttime" value={{p.created_on}}>
+
+</form>
+
+
+<script>
+    $(document).ready(function() {
+        window.cursor = 0;
+        window.loadingMore = false;
+
+        function appendData(data) {
+            $.each(data.results, function(index, p) {
+                            console.log(p)
+                                
+                                    $(".blog_d").append(
+                                    '<div class="col-md-3 col-sm-3 col-xs-12 infinite-item">'+
+                                        '<div class="row">'+
+                                            '<article class="article col-md-12">'+
+                                                '<div class="inner">'+
+                                                    '<figure>'+
+                                                        "<img src='"+ p.blog_image +"'>"+
+                                                    '</figure>'+
+                                                    '<div class="padding">'+
+                                                        '<div class="detail">'+
+                                                        '<div class="time">'+
+                                                        '<span id="local-time">'+ new Date(p.created_on+" UTC").toLocaleString("en-US", {month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "numeric", hour12: true}) +
+                                                        '</div>'+
+                                                        '<div class="category">' + '<a href="#">' + p.category + '</a>' +'</div>'+
+                                                    '</div>'+
+                                                    '<h2>' + p.Title + '</h2>'+
+                                                    '<p class="blog-post">Blog Post by:' + p.author + '</p>'+
+                                                    '<p>' + p.preview+'</p>'+
+                                                    '<footer>'+
+                                                        '<a href="javascript:;" class="favorite-button favbtn_'+p.id+'" data-blogid= '+p.id+'>'+
+                                                                '<i class="ion-android-favorite"></i>'+
+                                                        '</a>'+
+                                                        '<a class="btn btn-primary more" href="post/'+p.id+' ">' +
+                                                        '<div class="btn-text"> Read More </div>' +
+                                                        '<div><i class="ion-ios-arrow-thin-right"></i></div>'+
+                                                        '</a>'+
+                                                    '</footer>'+
+                                                '</div>'+
+                                            '</article>'+
+                                        '</div>'+
+                                    '</div>'
+
+                                    );
+
+                                    
+                                });
+                                
+        }
+        
+        function blog_load(next){
+            
+                alert( "Enter into blog function!" );
+                
+                var cursor = $(this).data("cursor");
+                alert(cursor)
+                var blogId = $(this).data("blogid");
+                var c_user= document.getElementById("userId").value;
+                var bid= document.getElementById("blogid").value;
+                // const userid = JSON.parse(document.getElementById('userid').textContent);
+                $.ajax({
+                    url:"{% url 'blogpostapp:bloglist'%}",
+                    data: {
+                        cursor: cursor,
+                        post_id:blogId,
+                        
+                    },
+                    success: function(data) {
+                        alert('Done')
+                        // $('#comment_d').append(data);
+                        nextPage = data.next;
+                        alert(nextPage)
+
+
+                        // window.cursor = nextPage
+                        // console.log(window.cursor)
+                        $('#next_btn').val(nextPage)
+                        
+                        if (nextPage) {
+                            window.cursor = nextPage;
+                            // loadpost(window.cursor)
+                            window.loadingMore = false;
+                        } else {
+                            window.loadingMore = true;
+                        }
+                        console.log(data.results)
+                        appendData(data);
+
+                    }
+                });
+        }
+        
+        function loadpost(cursor){
+
+            var c_user= document.getElementById("userId").value;
+            var cursor = $(this).data("cursor");
+            var t = $('#next_btn').val();
+            if (t){
+                $.ajax({
+                    url:t,
+                    data: {cursor: cursor},
+                    success: function(data) {
+                        // alert('Done')
+                        $('#comment_d').append(data);
+                        nextPage = data.next;
+                        alert(nextPage)
+                        window.cursor = nextPage
+                        console.log(window.cursor)
+                        $('#next_btn').val(nextPage);
+                        
+                        $(".blog_d").append(
+                                '<div class="line top"></div>'
+                        );
+                        appendData(data);   
+                        if (nextPage==null)
+                        {   
+                            $(window).off('scroll');
+                        }
+                        }
+                });
+            }
+        }
+    
+        var next=true    
+        blog_load(true);
+            
+        $(window).scroll(function() {
+            console.log($(window).scrollTop());
+            console.log($(document).height()); 
+            console.log($(window).height());
+            console.log(window.cursor);
+            console.log(window.loadingMore);
+            // console.log(!window.loadingMore && $(window).scrollTop())
+
+            // if (!window.loadingMore && $(window).scrollTop() >= $(document).height() - $(window).height()-200) {
+            if (!window.loadingMore && $(window).scrollTop() + $(window).height() >= $(document).height()/2) {
+                window.loadingMore = true;
+                if (window.cursor !=null)
+                    {
+                    loadpost(window.cursor);
+                    }
+            }
+        });
+
+
+        
+    $('.favorite-button').on("click",function() 
+    {   
+        var blog_id = $(this).data('blogid');
+    
+        $.ajax({
+            url: '{% url 'blogpostapp:toggle_heart'%}',
+            type: "POST",
+            // headers: {
+            //     "X-CSRFToken": getCookie("csrftoken")
+            // },
+            dataType: "json",
+            data: {
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+                'blog_id': blog_id
+            },
+            success: function (data) {
+                if (data.is_favorite)
+                {
+                    console.log(data.is_favorite);
+                    $('.favbtn_'+blog_id+'  i').addClass("ion-android-favorite");
+                    $('.favbtn_'+blog_id+'  i').removeClass("ion-android-favorite-outline");
+                    
+                }
+                else
+                {
+                    console.log(data.is_favorite);
+                    $('.favbtn_'+blog_id+'  i').removeClass("ion-android-favorite");
+                    $('.favbtn_'+blog_id+'  i').addClass("ion-android-favorite-outline");
+                    
+                }
+                // update the UI to show the change
+            }
+        });
+        
+    });
+});
+</script>
+ 
+
+{% endblock content %}
